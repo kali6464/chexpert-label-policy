@@ -1,0 +1,21 @@
+Test mean AUC, Atelectasis+Edema policy, seed 42 (single runs)
+
+setting                 DenseNet-121       DeiT-Base   ConvNeXt-Base  max - min
+base LR, 3 epochs             0.8878          0.8868          0.8817     0.0062
+0.5x LR, 3 epochs             0.8856          0.8888          0.8853     0.0035
+2x LR, 3 epochs               0.8902          0.8825          0.8825     0.0077
+base LR, 6 epochs             0.8783          0.8807          0.8879     0.0097
+
+Per run:
+DenseNet-121   base LR, 3 epochs    test 0.8878 [0.871, 0.903]  validation 0.8805  selection 0.8274  selected step 19000
+DeiT-Base      base LR, 3 epochs    test 0.8868 [0.868, 0.904]  validation 0.8696  selection 0.8341  selected step 20000
+ConvNeXt-Base  base LR, 3 epochs    test 0.8817 [0.862, 0.900]  validation 0.8774  selection 0.8356  selected step 20000
+DenseNet-121   0.5x LR, 3 epochs    test 0.8856 [0.869, 0.902]  validation 0.8745  selection 0.8241  selected step 20000
+DeiT-Base      0.5x LR, 3 epochs    test 0.8888 [0.871, 0.905]  validation 0.8686  selection 0.8302  selected step 20000
+ConvNeXt-Base  0.5x LR, 3 epochs    test 0.8853 [0.867, 0.902]  validation 0.8795  selection 0.8324  selected step 20000
+DenseNet-121   2x LR, 3 epochs      test 0.8902 [0.874, 0.906]  validation 0.8800  selection 0.8290  selected step 19000
+DeiT-Base      2x LR, 3 epochs      test 0.8825 [0.864, 0.901]  validation 0.8687  selection 0.8336  selected step 20000
+ConvNeXt-Base  2x LR, 3 epochs      test 0.8825 [0.863, 0.901]  validation 0.8759  selection 0.8372  selected step 20000
+DenseNet-121   base LR, 6 epochs    test 0.8783 [0.858, 0.896]  validation 0.8726  selection 0.8300  selected step 27000
+DeiT-Base      base LR, 6 epochs    test 0.8807 [0.862, 0.899]  validation 0.8599  selection 0.8331  selected step 26000
+ConvNeXt-Base  base LR, 6 epochs    test 0.8879 [0.870, 0.904]  validation 0.8836  selection 0.8359  selected step 18000

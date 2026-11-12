@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N policy_run
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=12:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# Submit with, for example:
+#   qsub -N lp_densen_s42 -v BACKBONE=densenet121,LR=1e-4,WD=1e-5,SEED=42 policy.pbs
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u train_policy.py --config config.yaml \
+    backbone=${BACKBONE} lr=${LR} weight_decay=${WD} seed=${SEED}

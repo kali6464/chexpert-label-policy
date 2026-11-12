@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -N nih_patients
+#PBS -l select=1:mem=32gb:ncpus=4
+#PBS -l walltime=08:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# CPU only, no GPU. Recomputes the NIH comparisons from the saved predictions, resampling
+# patients instead of images. Writes runs/external_nih_patients_summary.txt and leaves the
+# image-level runs/external_nih_summary.txt untouched.
+cd ${PBS_O_WORKDIR}
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u score_external.py --name nih --csv ../external/nih_test.csv --img_dir ../external \
+    --summary_only --cluster nih

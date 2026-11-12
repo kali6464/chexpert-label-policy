@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N score_ignore
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=03:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# Scores the 9 U-Ignore runs on the test set (runs already scored are skipped), then runs the
+# paired seed-ensemble comparisons. Submit after all 9 training jobs have finished.
+# Output: runs/ignore_comparisons.txt
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u score_test.py --runs_root ./runs
+
+OUT=runs/ignore_comparisons.txt
+: > $OUT
+for B in densenet121 deit_base_distilled_patch16_384 convnext_base; do
+  ens() { echo "runs/${B}__$1__s42,runs/${B}__$1__s43,runs/${B}__$1__s44"; }
+  for PAIR in "ignore zeros" "Atelectasis+Edema ignore"; do
+    set -- $PAIR
+    echo "===== $B : $1 vs $2 =====" >> $OUT
+    python -u compare_test.py "$(ens $1)" "$(ens $2)" >> $OUT
+    echo >> $OUT
+  done
+done
+grep -h "ignore" runs/test_summary.txt >> $OUT 2>/dev/null
+cat $OUT

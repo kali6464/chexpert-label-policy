@@ -1,0 +1,39 @@
+# Shared settings for every run. Per-run values (backbone, uncertainty_policy,
+# lr, weight_decay, seed) are overridden on the command line by submit_grid.sh.
+
+# --- data (pre-resized copy made by preprocess_resize.py) ---
+img_dir: "/mmfs1/projects/simone.ludwig/kamran.ali/pneumoniaimageclassification/data/processed/CheXpert-v1.0-384"
+train_csv: "/mmfs1/projects/simone.ludwig/kamran.ali/pneumoniaimageclassification/data/processed/CheXpert-v1.0-384/train_split.csv"
+select_csv: "/mmfs1/projects/simone.ludwig/kamran.ali/pneumoniaimageclassification/data/processed/CheXpert-v1.0-384/select_split.csv"
+official_val_csv: "/mmfs1/projects/simone.ludwig/kamran.ali/pneumoniaimageclassification/data/processed/CheXpert-v1.0-384/valid.csv"
+views: "all"            # "all" or "frontal"; keep identical across runs you compare
+img_size: 384
+
+# --- per-run defaults (overridden by submit_grid.sh) ---
+backbone: "convnext_base.fb_in22k_ft_in1k"
+uncertainty_policy: "zeros"   # "zeros", "ones", or labels joined by '+', e.g. "Atelectasis"
+lr: 5.0e-5
+weight_decay: 0.05
+seed: 42
+
+# --- optimisation (same for all runs) ---
+batch_size: 32
+num_epochs: 3
+warmup_steps: 1000      # per-step linear warmup
+min_lr_ratio: 0.01
+grad_clip: 1.0
+dropout: 0.0
+use_amp: true
+
+# --- augmentation / inference (same for all runs) ---
+hflip: false            # horizontal flip mirrors the heart; off by default
+use_tta: false          # flip TTA only makes sense if hflip is true
+
+# --- checkpoint selection and reporting ---
+eval_every: 1000        # steps between evaluations on the held-out split
+patience_evals: 0       # 0 = never stop early; run the full schedule
+log_every: 200
+n_boot: 2000
+max_steps: 0            # >0 stops after that many steps (smoke tests only)
+num_workers: 8
+runs_root: "./runs"

@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N policy_smoke
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=01:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u train_policy.py --config config.yaml max_steps=300 warmup_steps=50 policy_start=50 \
+    guide_every=10 eval_every=150 log_every=25 run_name=smoke_policy

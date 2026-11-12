@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -q default
+#PBS -N chexpert_resize
+#PBS -l select=1:mem=16gb:ncpus=16
+#PBS -l walltime=12:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+cd ${PBS_O_WORKDIR}
+source ~/anaconda3/bin/activate pytorch-gym
+
+BASE=/mmfs1/projects/simone.ludwig/kamran.ali/pneumoniaimageclassification/data/processed
+SRC=$BASE/Chexpert_original_450GB/CheXpert-v1.0
+DST=$BASE/CheXpert-v1.0-384
+
+python -u preprocess_resize.py --src_root $SRC --dst_root $DST --size 384 --workers 16
+python -u make_split.py --train_csv $DST/train.csv --out_dir $DST --holdout_patients 2000 --seed 0

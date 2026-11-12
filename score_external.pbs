@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N score_ext
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=06:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# Submit from the CheXpert_pipeline folder with the data set given, e.g.
+#   qsub -v NAME=vindr,CSV=/path/external/vindr_test.csv,IMG=/path/external score_external.pbs
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u score_external.py --name ${NAME} --csv ${CSV} --img_dir ${IMG}

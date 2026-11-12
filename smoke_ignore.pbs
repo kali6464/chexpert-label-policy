@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N smoke_ignore
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=01:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# 100-step test of the U-Ignore loss. Writes to runs/smoke_ignore (skipped by score_test.py).
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u train.py --config config.yaml backbone=densenet121 uncertainty_policy=ignore \
+    lr=1e-4 weight_decay=1e-5 seed=42 max_steps=100 eval_every=50 log_every=10 run_name=smoke_ignore

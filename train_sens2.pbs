@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N cx_sens2
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=72:00:00
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# Same as train_sens.pbs, but the seed is passed in (SEED). Results go to ./runs_sens.
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u train.py --config config.yaml \
+    backbone=${BACKBONE} uncertainty_policy=Atelectasis+Edema \
+    lr=${LR} weight_decay=${WD} seed=${SEED} \
+    num_epochs=${EPOCHS} runs_root=./runs_sens run_name=${RUN_NAME}

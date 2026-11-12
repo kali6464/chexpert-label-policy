@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N score_sens2
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=03:00:00
+#PBS -j oe
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# Scores the 18 new sensitivity runs (already-scored runs are skipped) and writes
+# runs_sens/sensitivity_summary_3seeds.txt. Submit after all 18 training jobs have finished.
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u score_test.py --runs_root ./runs_sens
+python -u summarize_sensitivity_seeds.py

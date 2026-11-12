@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -q gpus
+#PBS -N cx_sens
+#PBS -l select=1:mem=64gb:ncpus=8:ngpus=1:glist=a100
+#PBS -l walltime=72:00:00
+#PBS -W group_list=x-ccast-prj-siludwig
+
+# Submitted by submit_sensitivity.sh, which passes BACKBONE, LR, WD, EPOCHS and RUN_NAME.
+# Everything else comes from config.yaml, exactly as in the main grid. Results go to
+# ./runs_sens so the 33 main runs in ./runs are never touched.
+cd ${PBS_O_WORKDIR}
+module load cuda/12.3
+module load cudnn/8.9
+source ~/anaconda3/bin/activate pytorch-gym
+
+python -u train.py --config config.yaml \
+    backbone=${BACKBONE} uncertainty_policy=Atelectasis+Edema \
+    lr=${LR} weight_decay=${WD} seed=42 \
+    num_epochs=${EPOCHS} runs_root=./runs_sens run_name=${RUN_NAME}
